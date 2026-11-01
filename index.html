@@ -16,18 +16,18 @@
   * { box-sizing: border-box; }
   body { margin: 0; background: transparent; padding: 9px; color: var(--ink);
     font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
-  .app { width: 100%; max-width: 1020px; margin: 0 auto; border: 1px solid #39476a;
-    border-radius: 21px; overflow: hidden;
-    background: radial-gradient(ellipse 52% 76% at 100% 0%, rgba(124,81,223,.22), transparent 80%),
-       radial-gradient(ellipse 56% 69% at -10% 100%, rgba(30,168,163,.12), transparent 85%),
-       linear-gradient(120deg, #111a32, #10182e 54%, #191832);
+  /* Five equal colour bands repeat across the top and bottom edges.
+     The left and right edges continue the first and last deck colours. */
+  .app { width: 100%; max-width: 1020px; margin: 0 auto;
+    border: 4px solid transparent; border-radius: 21px; overflow: hidden;
+    background:
+       radial-gradient(ellipse 52% 76% at 100% 0%, rgba(124,81,223,.22), transparent 80%) padding-box,
+       radial-gradient(ellipse 56% 69% at -10% 100%, rgba(30,168,163,.12), transparent 85%) padding-box,
+       linear-gradient(120deg, #111a32, #10182e 54%, #191832) padding-box,
+       linear-gradient(to right,
+         var(--violet) 0% 20%, var(--pink) 20% 40%, var(--coral) 40% 60%,
+         var(--gold) 60% 80%, var(--teal) 80% 100%) border-box;
     box-shadow: 0 13px 35px rgba(10,12,27,.15); }
-  .stripe { height: 5px; display: grid; grid-template-columns: repeat(5, 1fr); }
-  .stripe span:nth-child(1) { background: var(--violet); }
-  .stripe span:nth-child(2) { background: var(--pink); }
-  .stripe span:nth-child(3) { background: var(--coral); }
-  .stripe span:nth-child(4) { background: var(--gold); }
-  .stripe span:nth-child(5) { background: var(--teal); }
   .main { padding: 25px clamp(17px, 4.7vw, 46px) 22px; }
   .top { display: grid; grid-template-columns: minmax(0, 1fr) 234px; gap: 22px; align-items: center; }
   .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 10px;
@@ -44,7 +44,16 @@
     border: 1px solid #515173; border-radius: 17px; background: linear-gradient(145deg,#33395c,#222b4b);
     min-height: 145px; padding: 9px; text-align: center; }
   #days { color: var(--gold); font-size: clamp(70px, 9vw, 94px); line-height: .97;
-    font-weight: 880; letter-spacing: -.07em; font-variant-numeric: tabular-nums; }
+    font-weight: 880; letter-spacing: -.07em; font-variant-numeric: tabular-nums;
+    transform-origin: center; animation: countdown-pulse 2.6s ease-in-out infinite; }
+  /* Smooth ping-pong scale: gently grows, then returns to normal, forever. */
+  @keyframes countdown-pulse {
+    0%, 100% { transform: scale(1); text-shadow: 0 0 0 transparent; }
+    50% { transform: scale(1.09); text-shadow: 0 0 18px rgba(255,218,101,.16); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #days { animation: none; }
+  }
   #days-label { margin-top: 9px; font-size: 12px; font-weight: 850; text-transform: uppercase;
     letter-spacing: .13em; line-height: 1.35; }
   .message { display: grid; grid-template-columns: 7px 1fr; gap: 0;
@@ -98,7 +107,6 @@
 </head>
 <body>
   <main class="app" id="app" aria-label="Assignment deadline countdown and progress guidance">
-    <div class="stripe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
     <div class="main">
       <div class="top">
         <div>
@@ -120,11 +128,14 @@
         </div>
       </section>
       <div class="footer">
-        <div class="milestone-list" id="milestone-list" aria-label="Countdown checkpoints: 30, 25, 20, 15, 10, and 5 days">
-          <span data-threshold="30">30</span><span data-threshold="25">25</span><span data-threshold="20">20</span>
-          <span data-threshold="15">15</span><span data-threshold="10">10</span><span data-threshold="5">5</span>
+        <div class="milestone-list" id="milestone-list" aria-label="Monday checkpoints: 31, 24, 17, 10, and 3 days">
+          <span data-threshold="31" title="Monday 9 November">31</span>
+          <span data-threshold="24" title="Monday 16 November">24</span>
+          <span data-threshold="17" title="Monday 23 November">17</span>
+          <span data-threshold="10" title="Monday 30 November">10</span>
+          <span data-threshold="3" title="Monday 7 December">3</span>
         </div>
-        <p id="next">Checkpoints update automatically as the deadline approaches.</p>
+        <p id="next">Weekly checkpoints update every Monday at 9:00 AM UK time.</p>
       </div>
     </div>
   </main>
@@ -134,7 +145,25 @@
     const DEADLINE = Date.parse('2026-12-10T16:00:00Z');
     const DUE_CALENDAR_DAY = Date.UTC(2026, 11, 10);
     const DAY_MS = 86_400_000;
-    const stages = [{"days": 30, "title": "Plan your assignment", "prompt": "Review the assignment brief and assessment criteria. Break the remaining work into weekly tasks and identify what you need to complete."}, {"days": 25, "title": "Arrange a feedback meeting", "prompt": "Contact your lecturer or course leader to discuss your progress, identify challenges and arrange formative feedback."}, {"days": 20, "title": "Get formative feedback", "prompt": "Share your work in progress, ask specific questions and agree the most important improvements before submission."}, {"days": 15, "title": "Act on the feedback", "prompt": "Refine your project, improve the quality of your evidence and check that your submission demonstrates your process."}, {"days": 10, "title": "Prepare for submission", "prompt": "Check your deliverables, organise your files and leave time to resolve any outstanding technical or presentation issues."}, {"days": 5, "title": "Final checks and submit early", "prompt": "Check your file formats, links and uploads. Aim to submit before the deadline to avoid last-minute problems."}];
+    // Weekly Canvas announcements are set for Mondays at 9:00 AM UK time.
+    // November/December 2026 in London uses GMT (UTC+00:00).
+    const stages = [
+      { days: 31, date: 'Monday 9 November', release: '2026-11-09T09:00:00Z',
+        title: 'Plan your assignment',
+        prompt: 'Review your assignment requirements, check your progress and identify any missing work. Create a realistic plan with weekly targets.' },
+      { days: 24, date: 'Monday 16 November', release: '2026-11-16T09:00:00Z',
+        title: 'Arrange a feedback meeting',
+        prompt: 'Review your progress and arrange a meeting with your lecturer or course leader to discuss your work and receive formative feedback.' },
+      { days: 17, date: 'Monday 23 November', release: '2026-11-23T09:00:00Z',
+        title: 'Act on your feedback',
+        prompt: 'Use your formative feedback to improve the assignment and complete any outstanding work. Seek guidance if you still need it.' },
+      { days: 10, date: 'Monday 30 November', release: '2026-11-30T09:00:00Z',
+        title: 'Review and refine your assignment',
+        prompt: 'Check your work against the assessment requirements, finish missing sections and allow time to review and refine.' },
+      { days: 3, date: 'Monday 7 December', release: '2026-12-07T09:00:00Z',
+        title: 'Prepare your final submission',
+        prompt: 'Check that all required files are included and ready. Upload your assignment before the deadline rather than leaving it until the last minute.' }
+    ];
     const dateFmt = new Intl.DateTimeFormat('en-GB', {
       timeZone: 'Europe/London', day: '2-digit', month: '2-digit', year: 'numeric'
     });
@@ -147,8 +176,10 @@
       const days = Math.max(0, Math.round((DUE_CALENDAR_DAY - ukCalendarDay(now)) / DAY_MS));
       const expired = now >= DEADLINE;
       const dueToday = !expired && days === 0;
-      const active = stages.filter(s => days <= s.days).sort((a, b) => a.days - b.days)[0];
-      const future = stages.filter(s => days > s.days).sort((a, b) => b.days - a.days)[0];
+      // Change the weekly focus at exactly 9:00 AM GMT each Monday.
+      const activeIndex = stages.findLastIndex(s => now >= Date.parse(s.release));
+      const active = activeIndex >= 0 ? stages[activeIndex] : null;
+      const future = activeIndex + 1 < stages.length ? stages[activeIndex + 1] : null;
       const dayNumber = document.getElementById('days');
       dayNumber.textContent = String(days);
       document.getElementById('days-label').textContent = expired ? 'Deadline passed' : days === 1 ? 'Day remaining' : 'Days remaining';
@@ -167,20 +198,23 @@
         body.textContent = 'Complete your final checks and upload your required work before 4:00 PM UK time. Verify that Canvas confirms your submission.';
         next.textContent = 'Submission deadline: 4:00 PM today';
       } else if (active) {
-        stage.textContent = active.days + '-day checkpoint';
+        stage.textContent = active.days + '-day Monday checkpoint · ' + active.date;
         title.textContent = active.title;
         body.textContent = active.prompt;
-        next.textContent = future ? 'Next checkpoint: ' + future.days + ' days remaining' : 'Final deadline: 10 December at 4:00 PM';
+        next.textContent = future
+          ? 'Next: ' + future.date + ' · ' + future.days + ' days remaining'
+          : 'Final deadline: Thursday 10 December · 4:00 PM';
       } else {
-        stage.textContent = 'Before the 30-day checkpoint';
+        stage.textContent = 'Before the first Monday checkpoint';
         title.textContent = 'Get organised early';
         body.textContent = 'Review your assignment brief, assessment criteria and milestones. Start working now so you have time for formative feedback.';
-        next.textContent = 'First checkpoint: 30 days remaining · 10 November';
+        next.textContent = 'First: Monday 9 November at 9:00 AM · 31 days remaining';
       }
       document.getElementById('app').classList.toggle('expired', expired);
       document.querySelectorAll('[data-threshold]').forEach(el => {
         const val = Number(el.dataset.threshold);
-        el.classList.toggle('reached', days <= val && !expired);
+        const released = stages.find(s => s.days === val);
+        el.classList.toggle('reached', Boolean(released) && now >= Date.parse(released.release) && !expired);
         el.classList.toggle('current', !expired && !dueToday && active && val === active.days);
       });
     }
