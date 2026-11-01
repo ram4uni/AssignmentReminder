@@ -45,14 +45,17 @@
     min-height: 145px; padding: 9px; text-align: center; }
   #days { color: var(--gold); font-size: clamp(70px, 9vw, 94px); line-height: .97;
     font-weight: 880; letter-spacing: -.07em; font-variant-numeric: tabular-nums;
-    transform-origin: center; animation: countdown-pulse 2.6s ease-in-out infinite; }
-  /* Smooth ping-pong scale: gently grows, then returns to normal, forever. */
-  @keyframes countdown-pulse {
-    0%, 100% { transform: scale(1); text-shadow: 0 0 0 transparent; }
-    50% { transform: scale(1.09); text-shadow: 0 0 18px rgba(255,218,101,.16); }
+    display: inline-block; white-space: nowrap; transform-origin: center center;
+    will-change: transform;
+    /* Ping-pong: grows for 1.6 seconds, then shrinks for 1.6 seconds, repeating. */
+    animation: countdown-ping-pong 1.6s ease-in-out infinite alternate; }
+  @keyframes countdown-ping-pong {
+    from { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,218,101,0)); }
+    to { transform: scale(1.18); filter: drop-shadow(0 0 8px rgba(255,218,101,.33)); }
   }
+  /* Accessibility: preserve the static countdown for reduced-motion users. */
   @media (prefers-reduced-motion: reduce) {
-    #days { animation: none; }
+    #days { animation: none; will-change: auto; }
   }
   #days-label { margin-top: 9px; font-size: 12px; font-weight: 850; text-transform: uppercase;
     letter-spacing: .13em; line-height: 1.35; }
