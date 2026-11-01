@@ -48,18 +48,12 @@
     font-weight: 880; letter-spacing: -.07em; font-variant-numeric: tabular-nums;
     display: inline-block; white-space: nowrap; transform-origin: 50% 50%;
     transform: scale(1); will-change: transform; }
-  /* A faster, highly visible 2.3-second full cycle, continuously reversing. */
-  .app.pulse-active #days { animation: countdown-ping-pong 1.15s ease-in-out infinite alternate; }
+  /* Always-on ping-pong: 100% -> 125% -> 100% every 2.3 seconds. */
+  #days { animation: countdown-ping-pong 1.15s ease-in-out infinite alternate; }
   @keyframes countdown-ping-pong {
     0%   { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,218,101,0)); }
     100% { transform: scale(1.25); filter: drop-shadow(0 0 13px rgba(255,218,101,.55)); }
   }
-  /* Explicit play/pause button also lets users opt in if Windows disables animation. */
-  .pulse-toggle { position: absolute; top: 8px; right: 9px; z-index: 2;
-    border: 1px solid #5c6486; border-radius: 6px; background: rgba(17,24,44,.76);
-    color: #f4eaff; padding: 4px 7px; font: 700 10px/1.2 ui-sans-serif, system-ui, sans-serif;
-    cursor: pointer; white-space: nowrap; }
-  .pulse-toggle:hover, .pulse-toggle:focus-visible { background: #474772; outline-offset: 2px; }
   #days-label { margin-top: 9px; font-size: 12px; font-weight: 850; text-transform: uppercase;
     letter-spacing: .13em; line-height: 1.35; }
   .message { display: grid; grid-template-columns: 7px 1fr; gap: 0;
@@ -121,7 +115,6 @@
           <p class="due"><strong>Thursday, 10 December 2026</strong><br />4:00 PM · UK time (GMT)</p>
         </div>
         <div class="days">
-          <button type="button" class="pulse-toggle" id="pulse-toggle" aria-pressed="true" aria-label="Pause countdown animation">Ⅱ Pause</button>
           <div id="days" aria-live="polite" aria-atomic="true">—</div>
           <div id="days-label">Days remaining</div>
         </div>
@@ -225,24 +218,7 @@
         el.classList.toggle('current', !expired && !dueToday && active && val === active.days);
       });
     }
-    // Honour reduced-motion preferences by default, but provide a direct
-    // enable/disable button so the animation can be explicitly switched on.
-    const pulseMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const pulseButton = document.getElementById('pulse-toggle');
-    const pulseCard = document.getElementById('app');
-    let pulseOn = !pulseMedia.matches;
-    function applyPulse() {
-      pulseCard.classList.toggle('pulse-active', pulseOn);
-      pulseButton.textContent = pulseOn ? 'Ⅱ Pause' : '▶ Animate';
-      pulseButton.setAttribute('aria-pressed', String(pulseOn));
-      pulseButton.setAttribute('aria-label', pulseOn ? 'Pause countdown animation' : 'Enable countdown animation');
-    }
-    pulseButton.addEventListener('click', () => { pulseOn = !pulseOn; applyPulse(); });
-    // Update default if OS setting changes during the session.
-    if (pulseMedia.addEventListener) {
-      pulseMedia.addEventListener('change', event => { pulseOn = !event.matches; applyPulse(); });
-    }
-    applyPulse();
+    // Automatic continuous zoom-in / zoom-out: CSS animation starts at page load.
     const update = () => renderAt(Date.now());
     update();
     setInterval(update, 15000);
