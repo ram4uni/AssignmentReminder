@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0d1427" />
+  <meta name="description" content="Assignment countdown and formative feedback checkpoints for 10 December 2026, 4:00 PM UK." />
+  <title>Assignment Countdown &amp; Checkpoints</title>
+  <style>
+  :root {
+    color-scheme: dark;
+    --ink: #f7f8ff; --muted: #b7c4e0; --night: #0d1427;
+    --violet: #aa84ff; --pink: #f27bbb; --coral: #ff9b80;
+    --gold: #ffda65; --teal: #4ddbd1;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: transparent; padding: 9px; color: var(--ink);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  .app { width: 100%; max-width: 1020px; margin: 0 auto; border: 1px solid #39476a;
+    border-radius: 21px; overflow: hidden;
+    background: radial-gradient(ellipse 52% 76% at 100% 0%, rgba(124,81,223,.22), transparent 80%),
+       radial-gradient(ellipse 56% 69% at -10% 100%, rgba(30,168,163,.12), transparent 85%),
+       linear-gradient(120deg, #111a32, #10182e 54%, #191832);
+    box-shadow: 0 13px 35px rgba(10,12,27,.15); }
+  .stripe { height: 5px; display: grid; grid-template-columns: repeat(5, 1fr); }
+  .stripe span:nth-child(1) { background: var(--violet); }
+  .stripe span:nth-child(2) { background: var(--pink); }
+  .stripe span:nth-child(3) { background: var(--coral); }
+  .stripe span:nth-child(4) { background: var(--gold); }
+  .stripe span:nth-child(5) { background: var(--teal); }
+  .main { padding: 25px clamp(17px, 4.7vw, 46px) 22px; }
+  .top { display: grid; grid-template-columns: minmax(0, 1fr) 234px; gap: 22px; align-items: center; }
+  .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 10px;
+    color: #cfbcff; letter-spacing: .145em; text-transform: uppercase;
+    font-size: 11px; font-weight: 850; }
+  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--teal); box-shadow: 0 0 0 4px rgba(77,219,209,.13); flex-shrink: 0; }
+  h1 { margin: 0; font-weight: 850; font-size: clamp(25px, 3.3vw, 38px);
+    letter-spacing: -.044em; line-height: 1.12; }
+  h1 em { color: var(--gold); font-style: normal; }
+  .due { margin: 10px 0 0; color: #d5dff7; line-height: 1.55; font-size: 13px; }
+  .due strong { color: white; font-weight: 790; }
+  .days { display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 1px solid #515173; border-radius: 17px; background: linear-gradient(145deg,#33395c,#222b4b);
+    min-height: 145px; padding: 9px; text-align: center; }
+  #days { color: var(--gold); font-size: clamp(70px, 9vw, 94px); line-height: .97;
+    font-weight: 880; letter-spacing: -.07em; font-variant-numeric: tabular-nums; }
+  #days-label { margin-top: 9px; font-size: 12px; font-weight: 850; text-transform: uppercase;
+    letter-spacing: .13em; line-height: 1.35; }
+  .message { display: grid; grid-template-columns: 7px 1fr; gap: 0;
+    margin-top: 19px; overflow: hidden; border: 1px solid #344765;
+    border-radius: 13px; background: rgba(22,34,56,.82); }
+  .message-bar { background: var(--teal); }
+  .message-body { padding: 15px 19px; }
+  .stage { color: var(--teal); font-size: 10px; letter-spacing: .12em;
+    text-transform: uppercase; font-weight: 850; margin: 0 0 6px; }
+  #message-title { margin: 0; font-weight: 800; font-size: clamp(16px, 2vw, 20px); line-height: 1.2; }
+  #message-body { margin: 7px 0 0; font-size: 12.8px; line-height: 1.5; color: #d4ddf3; }
+  .footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 11px; margin-top: 15px; }
+  .milestone-list { display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: 10px; font-weight: 850; letter-spacing: .02em; }
+  .milestone-list span { display: inline-flex; min-width: 31px; padding: 5px 7px;
+    align-items: center; justify-content: center; border: 1px solid #435071;
+    border-radius: 7px; color: #bac5e5; background: rgba(32,40,65,.5); }
+  .milestone-list .reached { background: #3a3662; border-color: #a582fc; color: #f0e6ff; }
+  .milestone-list .current { background: #ffda65; border-color: #ffda65; color: #20233a; }
+  #next { margin: 0; font-size: 11px; line-height: 1.4; color: #b9c8e4; }
+  .expired #days { color: #ff9dad; }
+  .expired .message-bar { background: #ff9dad; }
+  .expired .stage { color: #ffb8c3; }
+  @media(max-width: 560px) {
+    body { padding: 5px; }
+    .app { border-radius: 16px; }
+    .main { padding: 17px 15px 17px; }
+    .top { grid-template-columns: minmax(0,1fr) 122px; gap: 12px; }
+    .eyebrow { font-size: 9px; letter-spacing: .1em; margin-bottom: 8px; }
+    h1 { font-size: clamp(20px, 5vw, 27px); }
+    .due { font-size: 11px; margin-top: 9px; }
+    .days { min-height: 135px; padding: 5px; border-radius: 13px; }
+    #days { font-size: 64px; }
+    #days-label { font-size: 9px; letter-spacing: .09em; }
+    .message { margin-top: 14px; }
+    .message-body { padding: 12px 13px; }
+    #message-body { font-size: 12px; }
+    .footer { margin-top: 11px; }
+    #next { font-size: 10px; }
+  }
+  @media(max-width: 350px) {
+    .main { padding: 14px 10px; }
+    .top { grid-template-columns: minmax(0,1fr) 102px; gap: 8px; }
+    h1 { font-size: 18px; }
+    #days { font-size: 57px; }
+    .milestone-list { gap: 5px; }
+    .milestone-list span { min-width: 27px; padding: 4px 5px; }
+  }
+  </style>
+</head>
+<body>
+  <main class="app" id="app" aria-label="Assignment deadline countdown and progress guidance">
+    <div class="stripe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="main">
+      <div class="top">
+        <div>
+          <p class="eyebrow">Assignment countdown</p>
+          <h1>Your assignment<br />is <em>due soon.</em></h1>
+          <p class="due"><strong>Thursday, 10 December 2026</strong><br />4:00 PM · UK time (GMT)</p>
+        </div>
+        <div class="days">
+          <div id="days" aria-live="polite" aria-atomic="true">—</div>
+          <div id="days-label">Days remaining</div>
+        </div>
+      </div>
+      <section class="message" aria-live="polite" aria-atomic="true">
+        <div class="message-bar" aria-hidden="true"></div>
+        <div class="message-body">
+          <p class="stage" id="stage">Your next step</p>
+          <h2 id="message-title">Plan your work</h2>
+          <p id="message-body">Review your brief and set realistic weekly goals.</p>
+        </div>
+      </section>
+      <div class="footer">
+        <div class="milestone-list" id="milestone-list" aria-label="Countdown checkpoints: 30, 25, 20, 15, 10, and 5 days">
+          <span data-threshold="30">30</span><span data-threshold="25">25</span><span data-threshold="20">20</span>
+          <span data-threshold="15">15</span><span data-threshold="10">10</span><span data-threshold="5">5</span>
+        </div>
+        <p id="next">Checkpoints update automatically as the deadline approaches.</p>
+      </div>
+    </div>
+  </main>
+  <script>
+    'use strict';
+    // Assignment deadline: 10 December 2026, 4pm London (GMT).
+    const DEADLINE = Date.parse('2026-12-10T16:00:00Z');
+    const DUE_CALENDAR_DAY = Date.UTC(2026, 11, 10);
+    const DAY_MS = 86_400_000;
+    const stages = [{"days": 30, "title": "Plan your assignment", "prompt": "Review the assignment brief and assessment criteria. Break the remaining work into weekly tasks and identify what you need to complete."}, {"days": 25, "title": "Arrange a feedback meeting", "prompt": "Contact your lecturer or course leader to discuss your progress, identify challenges and arrange formative feedback."}, {"days": 20, "title": "Get formative feedback", "prompt": "Share your work in progress, ask specific questions and agree the most important improvements before submission."}, {"days": 15, "title": "Act on the feedback", "prompt": "Refine your project, improve the quality of your evidence and check that your submission demonstrates your process."}, {"days": 10, "title": "Prepare for submission", "prompt": "Check your deliverables, organise your files and leave time to resolve any outstanding technical or presentation issues."}, {"days": 5, "title": "Final checks and submit early", "prompt": "Check your file formats, links and uploads. Aim to submit before the deadline to avoid last-minute problems."}];
+    const dateFmt = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London', day: '2-digit', month: '2-digit', year: 'numeric'
+    });
+    function ukCalendarDay(instant) {
+      const p = Object.fromEntries(dateFmt.formatToParts(new Date(instant))
+        .filter(x => x.type !== 'literal').map(x => [x.type, Number(x.value)]));
+      return Date.UTC(p.year, p.month - 1, p.day);
+    }
+    function renderAt(now) {
+      const days = Math.max(0, Math.round((DUE_CALENDAR_DAY - ukCalendarDay(now)) / DAY_MS));
+      const expired = now >= DEADLINE;
+      const dueToday = !expired && days === 0;
+      const active = stages.filter(s => days <= s.days).sort((a, b) => a.days - b.days)[0];
+      const future = stages.filter(s => days > s.days).sort((a, b) => b.days - a.days)[0];
+      const dayNumber = document.getElementById('days');
+      dayNumber.textContent = String(days);
+      document.getElementById('days-label').textContent = expired ? 'Deadline passed' : days === 1 ? 'Day remaining' : 'Days remaining';
+      const stage = document.getElementById('stage');
+      const title = document.getElementById('message-title');
+      const body = document.getElementById('message-body');
+      const next = document.getElementById('next');
+      if (expired) {
+        stage.textContent = 'Deadline reached';
+        title.textContent = 'The submission deadline has passed';
+        body.textContent = 'The deadline was 10 December 2026 at 4:00 PM UK time. Check your Canvas assignment for submission information.';
+        next.textContent = 'Please consult the assignment page for next steps.';
+      } else if (dueToday) {
+        stage.textContent = 'Due today · 4:00 PM UK';
+        title.textContent = 'Submit your assignment today';
+        body.textContent = 'Complete your final checks and upload your required work before 4:00 PM UK time. Verify that Canvas confirms your submission.';
+        next.textContent = 'Submission deadline: 4:00 PM today';
+      } else if (active) {
+        stage.textContent = active.days + '-day checkpoint';
+        title.textContent = active.title;
+        body.textContent = active.prompt;
+        next.textContent = future ? 'Next checkpoint: ' + future.days + ' days remaining' : 'Final deadline: 10 December at 4:00 PM';
+      } else {
+        stage.textContent = 'Before the 30-day checkpoint';
+        title.textContent = 'Get organised early';
+        body.textContent = 'Review your assignment brief, assessment criteria and milestones. Start working now so you have time for formative feedback.';
+        next.textContent = 'First checkpoint: 30 days remaining · 10 November';
+      }
+      document.getElementById('app').classList.toggle('expired', expired);
+      document.querySelectorAll('[data-threshold]').forEach(el => {
+        const val = Number(el.dataset.threshold);
+        el.classList.toggle('reached', days <= val && !expired);
+        el.classList.toggle('current', !expired && !dueToday && active && val === active.days);
+      });
+    }
+    const update = () => renderAt(Date.now());
+    update();
+    setInterval(update, 15000);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) update(); });
+  </script>
+  <noscript>Deadline: Thursday 10 December 2026, 4:00 PM UK time. Enable JavaScript to see the live countdown.</noscript>
+</body>
+</html>
