@@ -1,288 +1,633 @@
+
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0d1427" />
-  <meta name="description" content="Assignment countdown and formative feedback checkpoints for 10 December 2026, 4:00 PM UK." />
-  <title>Assignment Countdown &amp; Checkpoints</title>
-  <style>
-  :root {
-    color-scheme: dark;
-    --ink: #f7f8ff; --muted: #b7c4e0; --night: #0d1427;
-    --violet: #aa84ff; --pink: #f27bbb; --coral: #ff9b80;
-    --gold: #ffda65; --teal: #4ddbd1;
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assignment Countdown & Checkpoints</title>
+<style>
+:root {
+  color-scheme:dark;
+  --ink:#f7f8ff;
+  --muted:#b7c4e0;
+  --violet:#aa84ff;
+  --pink:#f27bbb;
+  --coral:#ff9b80;
+  --gold:#ffda65;
+  --teal:#4ddbd1;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  padding:9px;
+  color:var(--ink);
+  background:transparent;
+  font-family:Inter,system-ui,"Segoe UI",Arial,sans-serif;
+}
+.app {
+  width:100%;
+  max-width:1020px;
+  margin:auto;
+  border:4px solid transparent;
+  border-radius:21px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 100% 0%,rgba(124,81,223,.22),transparent 70%) padding-box,
+    linear-gradient(120deg,#111a32,#10182e 54%,#191832) padding-box,
+    linear-gradient(to right,
+      var(--violet) 0% 20%,
+      var(--pink) 20% 40%,
+      var(--coral) 40% 60%,
+      var(--gold) 60% 80%,
+      var(--teal) 80% 100%) border-box;
+}
+.main { padding:18px clamp(17px,4.7vw,46px) 12px; }
+.top {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 234px;
+  gap:22px;
+  align-items:center;
+}
+.eyebrow {
+  color:#cfbcff;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  font-size:11px;
+  font-weight:850;
+}
+.eyebrow::before {
+  content:"";
+  display:inline-block;
+  width:8px;
+  height:8px;
+  margin-right:10px;
+  border-radius:50%;
+  background:var(--teal);
+}
+h1 {
+  margin:10px 0;
+  font-weight:850;
+  font-size:clamp(25px,3.3vw,38px);
+  letter-spacing:-.04em;
+  line-height:1.12;
+}
+h1 em { color:var(--gold); font-style:normal; }
+.due { color:#d5dff7; line-height:1.55; font-size:13px; }
+.due strong { color:white; }
+.days {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:132px;
+  padding:9px;
+  border:1px solid #515173;
+  border-radius:17px;
+  position:relative;
+  text-align:center;
+  --red-mix:0;
+  --panel-top:#33395c;
+  --panel-bottom:#222b4b;
+  background:
+    linear-gradient(145deg,
+      rgba(244,49,70,var(--red-mix)),
+      rgba(206,18,49,var(--red-mix))),
+    linear-gradient(145deg,var(--panel-top),var(--panel-bottom));
+}
+.days.warning {
+  --panel-top:#b57323;
+  --panel-bottom:#654225;
+  border-color:#de9d50;
+}
+.days.urgent { border-color:#f18480; }
+.days.final-hours {
+  border-color:#ff6974;
+  box-shadow:0 0 0 1px rgba(255,119,123,.24);
+}
+#days {
+  display:inline-block;
+  color:var(--gold);
+  font-size:clamp(70px,9vw,94px);
+  line-height:.97;
+  font-weight:880;
+  letter-spacing:-.07em;
+  font-variant-numeric:tabular-nums;
+  transform-origin:center;
+  animation:countdown-ping-pong 1.15s ease-in-out infinite alternate;
+}
+@keyframes countdown-ping-pong {
+  from {
+    transform:scale(1);
+    filter:drop-shadow(0 0 0 transparent);
   }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: transparent; padding: 9px; color: var(--ink);
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
-  /* Five equal colour bands repeat across the top and bottom edges.
-     The left and right edges continue the first and last deck colours. */
-  .app { width: 100%; max-width: 1020px; margin: 0 auto;
-    border: 4px solid transparent; border-radius: 21px; overflow: hidden;
-    background:
-       radial-gradient(ellipse 52% 76% at 100% 0%, rgba(124,81,223,.22), transparent 80%) padding-box,
-       radial-gradient(ellipse 56% 69% at -10% 100%, rgba(30,168,163,.12), transparent 85%) padding-box,
-       linear-gradient(120deg, #111a32, #10182e 54%, #191832) padding-box,
-       linear-gradient(to right,
-         var(--violet) 0% 20%, var(--pink) 20% 40%, var(--coral) 40% 60%,
-         var(--gold) 60% 80%, var(--teal) 80% 100%) border-box;
-    box-shadow: 0 13px 35px rgba(10,12,27,.15); }
-  .main { padding: 18px clamp(17px, 4.7vw, 46px) 12px; }
-  .top { display: grid; grid-template-columns: minmax(0, 1fr) 234px; gap: 22px; align-items: center; }
-  .eyebrow { display: flex; align-items: center; gap: 9px; margin: 0 0 10px;
-    color: #cfbcff; letter-spacing: .145em; text-transform: uppercase;
-    font-size: 11px; font-weight: 850; }
-  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%;
-    background: var(--teal); box-shadow: 0 0 0 4px rgba(77,219,209,.13); flex-shrink: 0; }
-  h1 { margin: 0; font-weight: 850; font-size: clamp(25px, 3.3vw, 38px);
-    letter-spacing: -.044em; line-height: 1.12; }
-  h1 em { color: var(--gold); font-style: normal; }
-  .due { margin: 10px 0 0; color: #d5dff7; line-height: 1.55; font-size: 13px; }
-  .due strong { color: white; font-weight: 790; }
-  .days { display: flex; flex-direction: column; align-items: center; justify-content: center;
-    border: 1px solid #515173; border-radius: 17px; background: linear-gradient(145deg,#33395c,#222b4b);
-    min-height: 132px; padding: 9px; text-align: center; position: relative; }
-  /* The number only (not the panel) ping-pongs between 100% and 125%. */
-  #days { color: var(--gold); font-size: clamp(70px, 9vw, 94px); line-height: .97;
-    font-weight: 880; letter-spacing: -.07em; font-variant-numeric: tabular-nums;
-    display: inline-block; white-space: nowrap; transform-origin: 50% 50%;
-    transform: scale(1); will-change: transform; }
-  /* Always-on ping-pong: 100% -> 125% -> 100% every 2.3 seconds. */
-  #days { animation: countdown-ping-pong 1.15s ease-in-out infinite alternate; }
-  @keyframes countdown-ping-pong {
-    0%   { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,218,101,0)); }
-    100% { transform: scale(1.25); filter: drop-shadow(0 0 13px rgba(255,218,101,.55)); }
+  to {
+    transform:scale(1.25);
+    filter:drop-shadow(0 0 13px rgba(255,218,101,.55));
   }
-  #days-label { margin-top: 9px; font-size: 12px; font-weight: 850; text-transform: uppercase;
-    letter-spacing: .13em; line-height: 1.35; }
-  .message { display: grid; grid-template-columns: 7px 1fr; gap: 0;
-    margin-top: 12px; overflow: hidden; border: 1px solid #344765;
-    border-radius: 13px; background: rgba(22,34,56,.82); }
-  .message-bar { background: var(--teal); }
-  .message-body { padding: 10px 18px; }
-  .stage { color: var(--teal); font-size: 10px; letter-spacing: .12em;
-    text-transform: uppercase; font-weight: 850; margin: 0 0 6px; }
-  #message-title { margin: 0; font-weight: 800; font-size: clamp(16px, 2vw, 20px); line-height: 1.2; }
-  .message-tasks { display: grid; grid-template-columns: repeat(2, minmax(0,1fr));
-    column-gap: 25px; row-gap: 5px; margin: 9px 0 0;
-    padding-left: 18px; color: #d4ddf3; font-size: 12.8px; line-height: 1.4; }
-  .message-tasks li { padding-left: 1px; }
-  .message-tasks li::marker { color: var(--gold); }
-  .guidance { margin: 11px 0 0; padding-top: 9px; border-top: 1px solid rgba(184,201,238,.14);
-    font-size: 11.5px; line-height: 1.4; color: #b7c4e0; }
-  .guidance a { color: #ffe3a0; text-decoration: underline; text-underline-offset: 3px; }
-  .guidance a:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
-  .guidance [hidden] { display: none; }
-  .footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
-    gap: 11px; margin-top: 8px; }
-  .milestone-list { display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    font-size: 10px; font-weight: 850; letter-spacing: .02em; }
-  .milestone-list span { display: inline-flex; min-width: 31px; padding: 5px 7px;
-    align-items: center; justify-content: center; border: 1px solid #435071;
-    border-radius: 7px; color: #bac5e5; background: rgba(32,40,65,.5); }
-  .milestone-list .reached { background: #3a3662; border-color: #a582fc; color: #f0e6ff; }
-  .milestone-list .current { background: #ffda65; border-color: #ffda65; color: #20233a; }
-  #next { margin: 0; font-size: 11px; line-height: 1.4; color: var(--gold); font-weight: 700; }
-  .expired #days { color: #ff9dad; }
-  .expired .message-bar { background: #ff9dad; }
-  .expired .stage { color: #ffb8c3; }
-  @media(max-width: 560px) {
-    body { padding: 5px; }
-    .app { border-radius: 16px; }
-    .main { padding: 12px 15px 9px; }
-    .top { grid-template-columns: minmax(0,1fr) 122px; gap: 12px; }
-    .eyebrow { font-size: 9px; letter-spacing: .1em; margin-bottom: 8px; }
-    h1 { font-size: clamp(20px, 5vw, 27px); }
-    .due { font-size: 11px; margin-top: 9px; }
-    .days { min-height: 116px; padding: 5px; border-radius: 13px; }
-    #days { font-size: 64px; }
-    #days-label { font-size: 9px; letter-spacing: .09em; }
-    .message { margin-top: 9px; }
-    .message-body { padding: 9px 13px; }
-    .message-tasks { grid-template-columns: 1fr; font-size: 12px; row-gap: 5px; }
-    .guidance { font-size: 11px; }
-    .footer { margin-top: 8px; }
-    #next { display: none; }
-    #next { font-size: 10px; }
-  }
-  @media(max-width: 350px) {
-    .main { padding: 9px 10px; }
-    .top { grid-template-columns: minmax(0,1fr) 102px; gap: 8px; }
-    h1 { font-size: 18px; }
-    #days { font-size: 54px; }
-    .days { min-height: 107px; }
-    .message-body { padding: 8px 11px; }
-    #message-title { font-size: 15px; }
-    .message-tasks { font-size: 11.3px; line-height: 1.3; margin-top: 6px; row-gap: 3px; }
-    .guidance { margin-top: 7px; padding-top: 6px; font-size: 10.5px; }
-    /* Keep content readable on tiny phone screens without a second scrollbar. */
-    .footer { display: none; }
-  }
-  </style>
+}
+#days-label {
+  margin-top:9px;
+  font-size:12px;
+  font-weight:850;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+}
+.days [hidden] { display:none!important; }
+.clock {
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:2px;
+  width:100%;
+  color:#fff3e5;
+  font-variant-numeric:tabular-nums;
+}
+.clock-unit {
+  display:flex;
+  flex:1;
+  min-width:0;
+  flex-direction:column;
+  align-items:center;
+}
+.clock-value {
+  font-size:clamp(25px,3.8vw,42px);
+  font-weight:850;
+  line-height:1.08;
+}
+.clock-caption {
+  font-size:9px;
+  text-transform:uppercase;
+  color:#ffe4d6;
+  margin-top:7px;
+}
+.clock-colon { font-size:28px; font-weight:750; }
+.sound-toggle {
+  margin-top:8px;
+  padding:5px 9px;
+  border:1px solid rgba(255,255,255,.4);
+  border-radius:18px;
+  background:rgba(12,15,28,.27);
+  color:white;
+  font-size:10px;
+  font-weight:700;
+  cursor:pointer;
+}
+.sound-toggle:focus-visible {
+  outline:2px solid white;
+  outline-offset:2px;
+}
+.message {
+  display:grid;
+  grid-template-columns:7px 1fr;
+  margin-top:12px;
+  overflow:hidden;
+  border:1px solid #344765;
+  border-radius:13px;
+  background:rgba(22,34,56,.82);
+}
+.message-bar { background:var(--teal); }
+.message-body { padding:10px 18px; }
+.stage {
+  margin:0 0 6px;
+  color:var(--teal);
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+#message-title {
+  margin:0;
+  font-size:clamp(16px,2vw,20px);
+  line-height:1.2;
+}
+.message-tasks {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px 25px;
+  margin:9px 0 0;
+  padding-left:18px;
+  color:#d4ddf3;
+  font-size:12.8px;
+  line-height:1.4;
+}
+.message-tasks li::marker { color:var(--gold); }
+.guidance {
+  margin:11px 0 0;
+  padding-top:9px;
+  border-top:1px solid rgba(184,201,238,.14);
+  color:#b7c4e0;
+  font-size:11.5px;
+}
+.guidance a { color:#ffe3a0; }
+.guidance [hidden] { display:none; }
+.footer { margin-top:8px; }
+#next {
+  margin:0;
+  color:var(--gold);
+  font-size:11px;
+  line-height:1.4;
+  font-weight:700;
+}
+.expired #days { color:#ff9dad; }
+.expired .message-bar { background:#ff9dad; }
+.expired .stage { color:#ffb8c3; }
+
+@media(max-width:560px) {
+  body { padding:5px; }
+  .main { padding:12px 15px 9px; }
+  .top { grid-template-columns:minmax(0,1fr) 122px; gap:12px; }
+  .eyebrow { font-size:9px; }
+  h1 { font-size:clamp(20px,5vw,27px); }
+  .due { font-size:11px; }
+  .days { min-height:116px; padding:5px; }
+  #days { font-size:64px; }
+  #days-label { font-size:9px; }
+  .clock-value { font-size:24px; }
+  .clock-colon { font-size:17px; }
+  .clock-caption { font-size:7px; margin-top:3px; }
+  .sound-toggle { font-size:9px; }
+  .message-body { padding:9px 13px; }
+  .message-tasks { grid-template-columns:1fr; font-size:12px; }
+  .guidance { font-size:11px; }
+  #next { display:none; }
+}
+@media(max-width:350px) {
+  .top { grid-template-columns:minmax(0,1fr) 102px; gap:8px; }
+  h1 { font-size:18px; }
+  #days { font-size:54px; }
+  .clock-value { font-size:20px; }
+  .clock-colon { font-size:15px; }
+}
+</style>
 </head>
 <body>
-  <main class="app" id="app" aria-label="Assignment deadline countdown and progress guidance">
-    <div class="main">
-      <div class="top">
-        <div>
-          <p class="eyebrow">Assignment countdown</p>
-          <h1>Your assignment<br />is <em>due soon.</em></h1>
-          <p class="due"><strong>Thursday, 10 December 2026</strong><br />4:00 PM · UK time (GMT)</p>
-        </div>
-        <div class="days">
-          <div id="days" aria-live="polite" aria-atomic="true">—</div>
-          <div id="days-label">Days remaining</div>
-        </div>
-      </div>
-      <section class="message" aria-live="polite" aria-atomic="true">
-        <div class="message-bar" aria-hidden="true"></div>
-        <div class="message-body">
-          <p class="stage" id="stage">Your next step</p>
-          <h2 id="message-title">Plan your work</h2>
-          <ul class="message-tasks" id="message-tasks">
-            <li>Review your brief and assessment criteria.</li>
-            <li>Set realistic weekly targets.</li>
-          </ul>
-          <p class="guidance">
-            <a id="guidance-link" href="#" target="_blank" rel="noopener noreferrer" hidden>View assignment guidance ↗</a>
-            <span id="guidance-fallback">For full guidance, check your Canvas assignment page.</span>
-          </p>
-        </div>
-      </section>
-      <div class="footer">
-        <p id="next">Weekly checkpoints update every Monday at 9:00 AM UK time.</p>
-      </div>
-    </div>
-  </main>
-  <script>
-    'use strict';
-    // Assignment deadline: 10 December 2026, 4pm London (GMT).
-    const DEADLINE = Date.parse('2026-12-10T16:00:00Z');
-    const DUE_CALENDAR_DAY = Date.UTC(2026, 11, 10);
-    const DAY_MS = 86_400_000;
-    // Weekly Canvas announcements are set for Mondays at 9:00 AM UK time.
-    // November/December 2026 in London uses GMT (UTC+00:00).
-    // OPTIONAL: Paste the full HTTPS link to your Canvas assignment here.
-    // Example: 'https://youruniversity.instructure.com/courses/123/assignments/456'
-    // Leave empty to display a plain-text Canvas guidance reminder instead.
-    const ASSIGNMENT_GUIDANCE_URL = '';
 
-    // Each message starts at 9:00 AM UK time on its scheduled Monday
-    // and remains the weekly focus until the next Monday.
-    const stages = [
-      { days: 31, date: 'Monday 9 November', release: '2026-11-09T09:00:00Z',
-        title: 'One month to go — plan your assignment',
-        tasks: [
-          'Review the assignment brief and assessment criteria.',
-          'Identify missing work and set weekly targets.'
-        ] },
-      { days: 24, date: 'Monday 16 November', release: '2026-11-16T09:00:00Z',
-        title: 'Arrange your formative feedback meeting',
-        tasks: [
-          'Contact your lecturer or course leader to arrange a meeting.',
-          'Bring your work in progress and any questions.'
-        ] },
-      { days: 17, date: 'Monday 23 November', release: '2026-11-23T09:00:00Z',
-        title: 'Act on your feedback',
-        tasks: [
-          'Review the formative feedback you have received.',
-          'Improve your work and complete missing sections.'
-        ] },
-      { days: 10, date: 'Monday 30 November', release: '2026-11-30T09:00:00Z',
-        title: 'Review and refine your assignment',
-        tasks: [
-          'Check your work against the assessment criteria.',
-          'Refine your presentation and prepare the required files.'
-        ] },
-      { days: 3, date: 'Monday 7 December', release: '2026-12-07T09:00:00Z',
-        title: 'Final checks and submission',
-        tasks: [
-          'Check all required files and submission instructions.',
-          'Submit early and confirm your upload in Canvas.'
-        ] }
-    ];
-    // If you supply an HTTPS URL, the link becomes clickable automatically.
-    const guidanceLink = document.getElementById('guidance-link');
-    const guidanceFallback = document.getElementById('guidance-fallback');
-    if (ASSIGNMENT_GUIDANCE_URL.trim()) {
-      try {
-        const destination = new URL(ASSIGNMENT_GUIDANCE_URL.trim());
-        if (destination.protocol === 'https:') {
-          guidanceLink.href = destination.href;
-          guidanceLink.hidden = false;
-          guidanceFallback.hidden = true;
-        }
-      } catch (_) { /* Keep the plain-text guidance when URL is invalid. */ }
+<main class="app" id="app">
+<div class="main">
+
+<div class="top">
+  <div>
+    <p class="eyebrow">Assignment countdown</p>
+    <h1>Your assignment<br>is <em>due soon.</em></h1>
+    <p class="due">
+      <strong>Thursday, 10 December 2026</strong><br>
+      4:00 PM · UK time (GMT)
+    </p>
+  </div>
+
+  <div class="days" id="count-panel">
+    <div id="days" aria-live="polite">—</div>
+
+    <div id="clock" class="clock" role="timer" hidden>
+      <span class="clock-unit">
+        <span id="hours" class="clock-value">24</span>
+        <span class="clock-caption">Hours</span>
+      </span>
+      <span class="clock-colon">:</span>
+      <span class="clock-unit">
+        <span id="minutes" class="clock-value">00</span>
+        <span class="clock-caption">Minutes</span>
+      </span>
+      <span class="clock-colon">:</span>
+      <span class="clock-unit">
+        <span id="seconds" class="clock-value">00</span>
+        <span class="clock-caption">Seconds</span>
+      </span>
+    </div>
+
+    <div id="days-label">Days remaining</div>
+    <button id="sound-toggle" class="sound-toggle"
+      type="button" aria-pressed="false" hidden>
+      Enable ticking
+    </button>
+  </div>
+</div>
+
+<section class="message" aria-live="polite">
+  <div class="message-bar"></div>
+  <div class="message-body">
+    <p class="stage" id="stage">Your next step</p>
+    <h2 id="message-title">Plan your work</h2>
+    <ul class="message-tasks" id="message-tasks">
+      <li>Review your brief and assessment criteria.</li>
+      <li>Set realistic weekly targets.</li>
+    </ul>
+    <p class="guidance">
+      <a id="guidance-link" href="#" target="_blank"
+        rel="noopener noreferrer" hidden>
+        View assignment guidance
+      </a>
+      <span id="guidance-fallback">
+        For full guidance, check your Canvas assignment page.
+      </span>
+    </p>
+  </div>
+</section>
+
+<div class="footer">
+  <p id="next">First checkpoint: Monday 9 November at 9:00 AM</p>
+</div>
+
+</div>
+</main>
+
+<script>
+'use strict';
+
+// Deadline: Thursday 10 December 2026, 4 PM GMT.
+const DEADLINE = Date.parse('2026-12-10T16:00:00Z');
+const FINAL_24H_START = DEADLINE - 86400000;
+const DUE_CALENDAR_DAY = Date.UTC(2026,11,10);
+const DAY_MS = 86400000;
+
+// Leave empty until you want to add your Canvas link.
+const ASSIGNMENT_GUIDANCE_URL = '';
+
+const stages = [
+  {
+    days:31,
+    date:'Monday 9 November',
+    release:'2026-11-09T09:00:00Z',
+    title:'One month to go — plan your assignment',
+    tasks:[
+      'Review the assignment brief and assessment criteria.',
+      'Identify missing work and set weekly targets.'
+    ]
+  },
+  {
+    days:24,
+    date:'Monday 16 November',
+    release:'2026-11-16T09:00:00Z',
+    title:'Arrange your formative feedback meeting',
+    tasks:[
+      'Contact your lecturer or course leader to arrange a meeting.',
+      'Bring your work in progress and any questions.'
+    ]
+  },
+  {
+    days:17,
+    date:'Monday 23 November',
+    release:'2026-11-23T09:00:00Z',
+    title:'Act on your feedback',
+    tasks:[
+      'Review the formative feedback you have received.',
+      'Improve your work and complete missing sections.'
+    ]
+  },
+  {
+    days:10,
+    date:'Monday 30 November',
+    release:'2026-11-30T09:00:00Z',
+    title:'Review and refine your assignment',
+    tasks:[
+      'Check your work against the assessment criteria.',
+      'Refine your presentation and prepare the required files.'
+    ]
+  },
+  {
+    days:3,
+    date:'Monday 7 December',
+    release:'2026-12-07T09:00:00Z',
+    title:'Final checks and submission',
+    tasks:[
+      'Check all required files and submission instructions.',
+      'Submit early and confirm your upload in Canvas.'
+    ]
+  }
+];
+
+const dateFmt = new Intl.DateTimeFormat('en-GB',{
+  timeZone:'Europe/London',
+  year:'numeric',
+  month:'2-digit',
+  day:'2-digit'
+});
+
+function ukCalendarDay(time) {
+  const parts = Object.fromEntries(
+    dateFmt.formatToParts(new Date(time))
+      .filter(p=>p.type!=='literal')
+      .map(p=>[p.type,Number(p.value)])
+  );
+  return Date.UTC(parts.year,parts.month-1,parts.day);
+}
+
+const panel = document.getElementById('count-panel');
+const daysEl = document.getElementById('days');
+const clockEl = document.getElementById('clock');
+const soundButton = document.getElementById('sound-toggle');
+
+let soundEnabled = false;
+let audioContext = null;
+let lastTick = -1;
+let lastPhase = null;
+
+function blendRed(now) {
+  if (now >= DEADLINE) return 1;
+
+  // Final 24 hours: 90% to 100% red.
+  if (now >= FINAL_24H_START) {
+    return .9 + .1 *
+      Math.min(1,(now-FINAL_24H_START)/DAY_MS);
+  }
+
+  // 9 December before 4 PM: 80% to 90%.
+  const dec9 = Date.parse('2026-12-09T00:00:00Z');
+  if (now >= dec9) {
+    return .8 + .1 *
+      Math.min(1,(now-dec9)/(FINAL_24H_START-dec9));
+  }
+
+  if (now >= Date.parse('2026-12-08T00:00:00Z'))
+    return .7;
+
+  if (now >= Date.parse('2026-12-07T00:00:00Z'))
+    return .5;
+
+  return 0;
+}
+
+function playTick() {
+  if (!soundEnabled || !audioContext ||
+      audioContext.state !== 'running' ||
+      document.hidden) return;
+
+  const t = audioContext.currentTime;
+  const osc = audioContext.createOscillator();
+  const volume = audioContext.createGain();
+
+  osc.type = 'sine';
+  osc.frequency.value = 620;
+
+  volume.gain.setValueAtTime(.0001,t);
+  volume.gain.exponentialRampToValueAtTime(.017,t+.008);
+  volume.gain.exponentialRampToValueAtTime(.0001,t+.045);
+
+  osc.connect(volume);
+  volume.connect(audioContext.destination);
+
+  osc.start(t);
+  osc.stop(t+.05);
+}
+
+soundButton.addEventListener('click',async()=>{
+  if (soundEnabled) {
+    soundEnabled = false;
+    soundButton.textContent = 'Enable ticking';
+    soundButton.setAttribute('aria-pressed','false');
+    return;
+  }
+
+  try {
+    const AudioClass =
+      window.AudioContext || window.webkitAudioContext;
+
+    if (!AudioClass) throw new Error('Audio unavailable');
+
+    audioContext = audioContext || new AudioClass();
+    await audioContext.resume();
+
+    soundEnabled = true;
+    soundButton.textContent = 'Mute ticking';
+    soundButton.setAttribute('aria-pressed','true');
+  } catch(error) {
+    soundButton.textContent = 'Audio unavailable';
+    soundButton.disabled = true;
+  }
+});
+
+// Optional assignment guidance link.
+if (ASSIGNMENT_GUIDANCE_URL.trim()) {
+  try {
+    const link = new URL(ASSIGNMENT_GUIDANCE_URL.trim());
+    if (link.protocol === 'https:') {
+      const a = document.getElementById('guidance-link');
+      a.href = link.href;
+      a.hidden = false;
+      document.getElementById('guidance-fallback').hidden = true;
     }
-    const dateFmt = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Europe/London', day: '2-digit', month: '2-digit', year: 'numeric'
-    });
-    function ukCalendarDay(instant) {
-      const p = Object.fromEntries(dateFmt.formatToParts(new Date(instant))
-        .filter(x => x.type !== 'literal').map(x => [x.type, Number(x.value)]));
-      return Date.UTC(p.year, p.month - 1, p.day);
+  } catch(error) {}
+}
+
+function setTasks(items) {
+  const list = document.getElementById('message-tasks');
+  list.replaceChildren(...items.map(text=>{
+    const li = document.createElement('li');
+    li.textContent = text;
+    return li;
+  }));
+}
+
+function render() {
+  const now = Date.now();
+  const expired = now >= DEADLINE;
+  const days = Math.max(0,Math.round(
+    (DUE_CALENDAR_DAY-ukCalendarDay(now))/DAY_MS
+  ));
+  const within24 = now >= FINAL_24H_START && !expired;
+  const dueToday = !expired && days === 0;
+
+  const activeIndex = stages.findLastIndex(
+    s=>now>=Date.parse(s.release)
+  );
+  const active = activeIndex >= 0 ? stages[activeIndex] : null;
+  const future = stages[activeIndex+1] || null;
+
+  daysEl.hidden = within24;
+  clockEl.hidden = !within24;
+  soundButton.hidden = !within24;
+
+  if (daysEl.textContent !== String(days))
+    daysEl.textContent = String(days);
+
+  const label = document.getElementById('days-label');
+  label.textContent = expired ? 'Deadline passed' :
+    within24 ? 'Time remaining' :
+    days===1 ? 'Day remaining' : 'Days remaining';
+
+  panel.classList.toggle('warning',days<=10);
+  panel.classList.toggle('urgent',days<=3);
+  panel.classList.toggle('final-hours',within24);
+  panel.style.setProperty('--red-mix',String(blendRed(now)));
+
+  // Final 24-hour clock.
+  if (within24) {
+    const left = Math.max(0,Math.ceil((DEADLINE-now)/1000));
+    document.getElementById('hours').textContent =
+      String(Math.floor(left/3600)).padStart(2,'0');
+    document.getElementById('minutes').textContent =
+      String(Math.floor(left%3600/60)).padStart(2,'0');
+    document.getElementById('seconds').textContent =
+      String(left%60).padStart(2,'0');
+
+    const second = Math.floor(now/1000);
+    if (second !== lastTick) {
+      lastTick = second;
+      playTick();
     }
-    function renderAt(now) {
-      const days = Math.max(0, Math.round((DUE_CALENDAR_DAY - ukCalendarDay(now)) / DAY_MS));
-      const expired = now >= DEADLINE;
-      const dueToday = !expired && days === 0;
-      // Change the weekly focus at exactly 9:00 AM GMT each Monday.
-      const activeIndex = stages.findLastIndex(s => now >= Date.parse(s.release));
-      const active = activeIndex >= 0 ? stages[activeIndex] : null;
-      const future = activeIndex + 1 < stages.length ? stages[activeIndex + 1] : null;
-      const dayNumber = document.getElementById('days');
-      dayNumber.textContent = String(days);
-      document.getElementById('days-label').textContent = expired ? 'Deadline passed' : days === 1 ? 'Day remaining' : 'Days remaining';
-      const stage = document.getElementById('stage');
-      const title = document.getElementById('message-title');
-      const tasks = document.getElementById('message-tasks');
-      const next = document.getElementById('next');
-      const setTasks = (items) => {
-        // Only authored strings are used; no HTML injection.
-        tasks.replaceChildren(...items.map(t => {
-          const li = document.createElement('li');
-          li.textContent = t;
-          return li;
-        }));
-      };
-      if (expired) {
-        stage.textContent = 'Deadline reached';
-        title.textContent = 'The submission deadline has passed';
-        setTasks(['The deadline was 10 December 2026 at 4:00 PM.', 'Check your Canvas assignment for next steps.']);
-        next.textContent = 'Please consult the assignment page for next steps.';
-      } else if (dueToday) {
-        stage.textContent = 'Due today · 4:00 PM UK';
-        title.textContent = 'Submit your assignment today';
-        setTasks(['Upload all required files before 4:00 PM UK time.', 'Check that Canvas confirms your submission.']);
-        next.textContent = 'Submission deadline: 4:00 PM today';
-      } else if (active) {
-        stage.textContent = 'Weekly focus · ' + active.date;
-        title.textContent = active.title;
-        setTasks(active.tasks);
-        next.textContent = future
-          ? 'Next checkpoint: ' + future.date + ' at 9:00 AM'
-          : 'Final deadline: Thursday 10 December · 4:00 PM';
-      } else {
-        stage.textContent = 'Before the first Monday checkpoint';
-        title.textContent = 'Get organised early';
-        setTasks(['Read the brief and assessment criteria.', 'Start work now and plan time for formative feedback.']);
-        next.textContent = 'First checkpoint: Monday 9 November at 9:00 AM';
-      }
-      document.getElementById('app').classList.toggle('expired', expired);
-      document.querySelectorAll('[data-threshold]').forEach(el => {
-        const val = Number(el.dataset.threshold);
-        const released = stages.find(s => s.days === val);
-        el.classList.toggle('reached', Boolean(released) && now >= Date.parse(released.release) && !expired);
-        el.classList.toggle('current', !expired && !dueToday && active && val === active.days);
-      });
+  } else if (expired && soundEnabled) {
+    soundEnabled = false;
+    soundButton.textContent = 'Enable ticking';
+    soundButton.setAttribute('aria-pressed','false');
+  }
+
+  const stageEl = document.getElementById('stage');
+  const titleEl = document.getElementById('message-title');
+  const nextEl = document.getElementById('next');
+
+  const phase = expired ? 'expired' :
+    dueToday ? 'today' :
+    active ? active.release : 'before';
+
+  if (phase !== lastPhase) {
+    if (expired) {
+      stageEl.textContent = 'Deadline reached';
+      titleEl.textContent = 'The submission deadline has passed';
+      setTasks([
+        'The deadline was 10 December 2026 at 4:00 PM.',
+        'Check your Canvas assignment for next steps.'
+      ]);
+      nextEl.textContent =
+        'Please consult the assignment page for next steps.';
+    } else if (dueToday) {
+      stageEl.textContent = 'Due today · 4:00 PM UK';
+      titleEl.textContent = 'Submit your assignment today';
+      setTasks([
+        'Upload all required files before 4:00 PM UK time.',
+        'Check that Canvas confirms your submission.'
+      ]);
+      nextEl.textContent =
+        'Submission deadline: 4:00 PM today';
+    } else if (active) {
+      stageEl.textContent = 'Weekly focus · ' + active.date;
+      titleEl.textContent = active.title;
+      setTasks(active.tasks);
+      nextEl.textContent = future
+        ? 'Next checkpoint: '+future.date+' at 9:00 AM'
+        : 'Final deadline: Thursday 10 December · 4:00 PM';
+    } else {
+      stageEl.textContent = 'Before the first Monday checkpoint';
+      titleEl.textContent = 'Get organised early';
+      setTasks([
+        'Read the brief and assessment criteria.',
+        'Start work now and plan time for formative feedback.'
+      ]);
+      nextEl.textContent =
+        'First checkpoint: Monday 9 November at 9:00 AM';
     }
-    // Automatic continuous zoom-in / zoom-out: CSS animation starts at page load.
-    const update = () => renderAt(Date.now());
-    update();
-    setInterval(update, 15000);
-    document.addEventListener('visibilitychange', () => { if (!document.hidden) update(); });
-  </script>
-  <noscript>Deadline: Thursday 10 December 2026, 4:00 PM UK time. Enable JavaScript to see the live countdown.</noscript>
+
+    lastPhase = phase;
+  }
+
+  document.getElementById('app')
+    .classList.toggle('expired',expired);
+}
+
+render();
+setInterval(render,1000);
+document.addEventListener('visibilitychange',()=>{
+  if (!document.hidden) render();
+});
+</script>
 </body>
 </html>
